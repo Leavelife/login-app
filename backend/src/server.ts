@@ -7,7 +7,12 @@ import dotenv from "dotenv"
 dotenv.config();
 
 const app = new Elysia()
-    .use(cors())
+    .use(cors({
+        origin: 'http://localhost:5173',
+        credentials: true,
+        methods: ['GET', 'POST'],
+        allowedHeaders: ['Content-Type', 'Authorization']
+    }))
     .use(cookie())
     .get("/", () => ({message: "API is running"}));
 

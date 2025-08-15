@@ -34,10 +34,20 @@ export const registerController = async (body: any) => {
     const newUser = await prisma.user.create({
         data: {name, email, password: hashedPassword}
     });
+    const accessToken = generateAccessToken({id: newUser.id, email: newUser.email});
+    const refreshToken = generateRefreshToken({id: newUser.id, email: newUser.email});
+    
+    // Track refresh token so /refresh accepts it
+    refreshTokens.add(refreshToken);
 
     return { 
         status: 201, 
-        data: {message: "user registered", user: {id: newUser.id, email: newUser.email}}
+        data: {
+            message: "user registered", 
+            user: {id: newUser.id, email: newUser.email},
+            refreshToken,
+            accessToken
+        }
     };
 };
 
